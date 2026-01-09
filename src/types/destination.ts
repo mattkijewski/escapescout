@@ -1,18 +1,10 @@
 export interface Destination {
   id: string;
   name: string;
-  location: {
-    city: string;
-    state?: string;
-    country: string;
-    coordinates: {
-      lat: number;
-      lng: number;
-    };
-  };
-  flight_time: number; // in hours from Chicago
+  location: string;
+  flight_time: number; // in hours
   budget_tier: 'budget' | 'mid-range' | 'luxury';
-  best_months: number[]; // 1-12 representing months
+  best_months: string[];
   vibe: string[];
   lgbtq_rating: number; // 1-5 scale
   image_url: string;
@@ -20,17 +12,13 @@ export interface Destination {
   neighborhoods: string[];
   must_do: string[];
   lgbtq_nightlife: string;
-  estimated_cost: {
-    budget: number;
-    mid_range: number;
-    luxury: number;
-  };
+  price_range: string;
 }
 
-export interface FilterCriteria {
-  max_flight_time?: number;
-  budget_tier?: 'budget' | 'mid-range' | 'luxury';
-  month?: number;
-  vibe?: string[];
-  min_lgbtq_rating?: number;
+export interface FilterOptions {
+  maxFlightTime?: number;
+  budgetTier?: 'budget' | 'mid-range' | 'luxury';
+  month?: string;
+  vibe?: string;
+  minLgbtqRating?: number;
 }
