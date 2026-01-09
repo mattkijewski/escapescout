@@ -8,15 +8,15 @@ export interface Destination {
   vibe: string[];
   lgbtq_rating: number; // 1-5 scale
   image_url: string;
-  description: string;
   neighborhoods: string[];
   must_do: string[];
-  lgbtq_nightlife: string[];
+  lgbtq_nightlife_notes: string;
+  description: string;
 }
 
 export interface FilterCriteria {
   max_flight_time?: number;
-  budget_tiers?: string[];
+  budget_tier?: string[];
   months?: string[];
   vibes?: string[];
   min_lgbtq_rating?: number;
