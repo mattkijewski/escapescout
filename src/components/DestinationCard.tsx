@@ -1,101 +1,118 @@
-import React from 'react';
-import { Destination } from '../types/destination';
+import React from 'react'
+import { Destination } from '../types/destination'
 
 interface DestinationCardProps {
-  destination: Destination;
-  onViewDetails: (id: string) => void;
-  onToggleFavorite: (id: string) => void;
-  isFavorite: boolean;
+  destination: Destination
 }
 
-export const DestinationCard: React.FC<DestinationCardProps> = ({
-  destination,
-  onViewDetails,
-  onToggleFavorite,
-  isFavorite
-}) => {
-  const formatBudgetTier = (tier: string): string => {
-    const symbols = {
-      budget: '$',
-      mid: '$$',
-      luxury: '$$$'
-    };
-    return symbols[tier as keyof typeof symbols] || tier;
-  };
+const DestinationCard: React.FC<DestinationCardProps> = ({ destination }) => {
+  const cardStyle = {
+    backgroundColor: 'white',
+    borderRadius: '8px',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    overflow: 'hidden',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+  }
 
-  const formatMonths = (months: number[]): string => {
-    const monthNames = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    
-    if (months.length <= 3) {
-      return months.map(m => monthNames[m]).join(', ');
-    } else if (months.length >= 6) {
-      return 'Year-round';
-    } else {
-      return `${monthNames[months[0]]} - ${monthNames[months[months.length - 1]]}`;
-    }
-  };
+  const imageStyle = {
+    width: '100%',
+    height: '200px',
+    backgroundColor: '#e5e7eb',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#6b7280',
+    fontSize: '0.875rem',
+  }
+
+  const contentStyle = {
+    padding: '1.5rem',
+  }
+
+  const titleStyle = {
+    fontSize: '1.25rem',
+    fontWeight: '600',
+    marginBottom: '0.5rem',
+    color: '#1f2937',
+  }
+
+  const locationStyle = {
+    color: '#6b7280',
+    fontSize: '0.875rem',
+    marginBottom: '1rem',
+  }
+
+  const detailsStyle = {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '0.5rem',
+    fontSize: '0.875rem',
+    marginBottom: '1rem',
+  }
+
+  const labelStyle = {
+    color: '#6b7280',
+    fontWeight: '500',
+  }
+
+  const valueStyle = {
+    color: '#1f2937',
+  }
+
+  const monthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ]
+
+  const bestMonthsText = destination.best_months.map(month => monthNames[month - 1]).join(', ')
+
+  const renderStars = (rating: number) => {
+    return '★'.repeat(rating) + '☆'.repeat(5 - rating)
+  }
 
   return (
-    <div className="destination-card">
-      <div className="card-image">
-        <img 
-          src={destination.image_url} 
-          alt={destination.name}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = '/images/placeholder.jpg';
-          }}
-        />
-        <button 
-          className={`favorite-btn ${isFavorite ? 'favorite' : ''}`}
-          onClick={() => onToggleFavorite(destination.id)}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          ♥
-        </button>
+    <div 
+      style={cardStyle}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-2px)'
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)'
+        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)'
+      }}
+    >
+      <div style={imageStyle}>
+        {destination.name} Photo
       </div>
       
-      <div className="card-content">
-        <h3>{destination.name}</h3>
-        <p className="location">{destination.location.city}, {destination.location.state}</p>
+      <div style={contentStyle}>
+        <h3 style={titleStyle}>{destination.name}</h3>
+        <p style={locationStyle}>{destination.location}</p>
         
-        <div className="card-details">
-          <div className="detail-item">
-            <span className="label">Flight time:</span>
-            <span>{destination.flight_time.from_chicago}h</span>
-          </div>
+        <div style={detailsStyle}>
+          <span style={labelStyle}>Budget:</span>
+          <span style={valueStyle}>{destination.budget_tier}</span>
           
-          <div className="detail-item">
-            <span className="label">Budget:</span>
-            <span>{formatBudgetTier(destination.budget_tier)}</span>
-          </div>
+          <span style={labelStyle}>Flight:</span>
+          <span style={valueStyle}>{destination.flight_time}h</span>
           
-          <div className="detail-item">
-            <span className="label">Best time:</span>
-            <span>{formatMonths(destination.best_months)}</span>
-          </div>
+          <span style={labelStyle}>Best months:</span>
+          <span style={valueStyle}>{bestMonthsText}</span>
           
-          <div className="detail-item">
-            <span className="label">LGBTQ+ friendly:</span>
-            <span>{'★'.repeat(destination.lgbtq_rating)}{'☆'.repeat(5 - destination.lgbtq_rating)}</span>
-          </div>
+          <span style={labelStyle}>Vibe:</span>
+          <span style={valueStyle} style={{...valueStyle, textTransform: 'capitalize'}}>
+            {destination.vibe}
+          </span>
+          
+          <span style={labelStyle}>LGBTQ+ rating:</span>
+          <span style={valueStyle} title={`${destination.lgbtq_rating} out of 5 stars`}>
+            {renderStars(destination.lgbtq_rating)} ({destination.lgbtq_rating}/5)
+          </span>
         </div>
-        
-        <div className="vibe-tags">
-          {destination.vibe.slice(0, 3).map(vibe => (
-            <span key={vibe} className="vibe-tag">{vibe}</span>
-          ))}
-        </div>
-        
-        <button 
-          className="view-details-btn"
-          onClick={() => onViewDetails(destination.id)}
-        >
-          View Details
-        </button>
       </div>
     </div>
-  );
-};
+  )
+}
+
+export default DestinationCard
