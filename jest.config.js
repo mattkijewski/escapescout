@@ -1,12 +1,20 @@
-module.exports = {
+export default {
   preset: 'ts-jest',
-  testEnvironment: 'node',
-  roots: ['<rootDir>/src'],
-  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': 'ts-jest',
   },
+  testMatch: [
+    '<rootDir>/src/**/__tests__/**/*.(ts|tsx|js)',
+    '<rootDir>/src/**/*.(test|spec).(ts|tsx|js)',
+  ],
+  collectCoverageFrom: [
+    'src/**/*.(ts|tsx)',
+    '!src/**/*.d.ts',
+  ],
   moduleNameMapping: {
-    '^@/(.*)$': '<rootDir>/src/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
 };
